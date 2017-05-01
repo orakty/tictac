@@ -1,0 +1,45 @@
+body {
+    background: url("bgt.jpg");
+    background-size: 1800px ;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
+
+.tictac{
+    background: url("cage.jpg");
+    background-size:25px;
+    background-repeat: no-repeat;
+    border: 0px;
+    top: 0px; 
+    left: 0px; 
+    font-size:18px;
+    font-style: italic;
+    font-family:comic sans, comic sans ms, cursive, verdana, arial, sans-serif;
+    text-shadow: 1px -1px 1px #333333; 
+    color: #696969;
+}
+
+.div_text_shadow
+{ 
+    text-shadow: 6px -2px 2px #333333; 
+}
+
+input[type="text"] {
+    border: 1px solid black;
+    border-radius: 15px;
+    font-size:18px;
+    font-family:comic sans, comic sans ms, cursive, verdana, arial, sans-serif;
+    text-shadow: 1px -1px 1px #333333; 
+    text-align: center;
+    width: 50px;
+}
+
+.menu{
+    border-radius: 15px;
+    font-size:18px;
+    font-family:comic sans, comic sans ms, cursive, verdana, arial, sans-serif;
+    text-shadow: 1px -1px 1px #333333; 
+    text-align: center;
+    background-color: #F1C40F;
+    width: 200px;
+}
