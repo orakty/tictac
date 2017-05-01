@@ -7,10 +7,11 @@ var x_i,
     m = 0;
 var mas = [],
     max = 0;
+        var res;
+        var type = '';
     
 $( document ).ready(function() {
     
-        
     function soundClick() {
       var audio = new Audio(); 
       audio.src = 'audio/click.mp3';
@@ -47,8 +48,6 @@ $( document ).ready(function() {
             
         }
         
-   
-        
         $('.tictac').on('click', function(){
             soundClick();
             count = count + 1;
@@ -79,15 +78,9 @@ $( document ).ready(function() {
                 };
             };
             document.cookie = "cook_name=" + JSON.stringify(mas) + "; expires=" + (new Date(Date.now() + 7 * 86400000).toGMTString());
-     
-           
-
         });
-    
     });
-              
-
-
+    
     function win(i,j,player){
         var win_res;
         var c1 = mas[i][Number(j)-4]+''+mas[i][Number(j)-3]+''+mas[i][Number(j)-2]+''+mas[i][Number(j)-1]+''+mas[i][j]+''+mas[i][Number(j)+1]+''+mas[i][Number(j)+2]+''+mas[i][Number(j)+3]+''+mas[i][Number(j)+4];
@@ -95,7 +88,6 @@ $( document ).ready(function() {
         var c3 = mas[Number(i)-4][Number(j)-4]+''+mas[Number(i)-3][Number(j)-3]+''+mas[Number(i)-2][Number(j)-2]+''+mas[Number(i)-1][Number(j)-1]+''+mas[i][j]+''+mas[Number(i)+1][Number(j)+1]+''+mas[Number(i)+2][Number(j)+2]+''+mas[Number(i)+3][Number(j)+3]+''+mas[Number(i)+4][Number(j)+4];
         var c4 = mas[Number(i)+4][Number(j)-4]+''+mas[Number(i)+3][Number(j)-3]+''+mas[Number(i)+2][Number(j)-2]+''+mas[Number(i)+1][Number(j)-1]+''+mas[i][j]+''+mas[Number(i)-1][Number(j)+1]+''+mas[Number(i)-2][Number(j)+2]+''+mas[Number(i)-3][Number(j)+3]+''+mas[Number(i)-4][Number(j)+4];
         
-            //alert(c1+' '+c2+' '+c3+' '+c4);
         if(player == 'X'){
             var c1_res = c1.replace(/1/gi,'W').replace(/0/gi,'0').replace(/2/gi,'0').replace(/undefined/gi,'0'); 
             var c2_res = c2.replace(/1/gi,'W').replace(/0/gi,'0').replace(/2/gi,'0').replace(/undefined/gi,'0');
@@ -104,8 +96,11 @@ $( document ).ready(function() {
             win_res = winner(c1_res,c2_res,c3_res,c4_res)
             if(win_res){
                 alert('Игрок X выиграл');
+				$('.tictac').attr("disabled","disabled");
             };
-        } else {                               
+        } else {  
+			o_i = i;
+			o_j = j;		
             var c1_res = c1.replace(/2/gi,'W').replace(/0/gi,'0').replace(/1/gi,'0').replace(/undefined/gi,'0');
             var c2_res = c2.replace(/2/gi,'W').replace(/0/gi,'0').replace(/1/gi,'0').replace(/undefined/gi,'0');
             var c3_res = c3.replace(/2/gi,'W').replace(/0/gi,'0').replace(/1/gi,'0').replace(/undefined/gi,'0');
@@ -113,6 +108,7 @@ $( document ).ready(function() {
             win_res = winner(c1_res,c2_res,c3_res,c4_res)
             if(win_res){
                 alert('Игрок O выиграл');
+				$('.tictac').attr("disabled","disabled");
             };
         }
     }
@@ -176,45 +172,21 @@ $( document ).ready(function() {
                     };
                 }
             }
-            if(/*x_count <= o_count*/ 1===1){
+            if(x_count <= o_count){
                 if(mas[x_i][x_j] === 0){
                     $(this).val('X');
                     mas[x_i][x_j] = 1;
-                    calc(x_i,x_j,mas);
+                    calc(x_i,x_j,mas,'X');
                     win(x_i,x_j,'X');
                     var rr='',x,y;
-                    /*for(var i=0; i<n; i++){
-                        x = i;
-                        y = 0;
-                        while (x >= 0){
-                            rr = rr+''+mas[x][y];
-                            x = x - 1;
-                            y = y + 1;
-                        }
-                        rr = rr+'-';
-                    }
-                    
-                    for(var i=1; i<n; i++){
-                        x = n-1;
-                        y = i;
-                        while (y < n){
-                            rr = rr+''+mas[x][y];
-                            x = x - 1;
-                            y = y + 1;
-                        }
-                        rr = rr+'-';
-                    }
-                    alert(rr);*/
                 };
-            };
-            /*document.cookie = "cook_name=" + JSON.stringify(mas) + "; expires=" + (new Date(Date.now() + 7 * 86400000).toGMTString());
-            alert(JSON.parse(document.cookie.get('cook_name')));*/
+            } else {
+				alert('Просим прощения вышла ошибка =(');
+			};
         });
     });
     
-    function calc(i,j,mas){
-        var res;
-        var type = '';
+    function calc(i,j,mas,xo){
         var o;
         
         var c1 = mas[i][Number(j)-2]+''+mas[i][Number(j)-1]+''+mas[i][j]+''+mas[i][Number(j)+1]+''+mas[i][Number(j)+2];
@@ -222,27 +194,29 @@ $( document ).ready(function() {
         var c3 = mas[Number(i)-2][Number(j)-2]+''+mas[Number(i)-1][Number(j)-1]+''+mas[i][j]+''+mas[Number(i)+1][Number(j)+1]+''+mas[Number(i)+2][Number(j)+2];
         var c4 = mas[Number(i)+2][Number(j)-2]+''+mas[Number(i)+1][Number(j)-1]+''+mas[i][j]+''+mas[Number(i)-1][Number(j)+1]+''+mas[Number(i)-2][Number(j)+2];
         
-        var c1_res = ves(c1.replace(/1/gi,'X').replace(/0/gi,'3').replace(/2/gi,'3').replace(/undefined/gi,'3'),'');
-        var c2_res = ves(c2.replace(/1/gi,'X').replace(/0/gi,'3').replace(/2/gi,'3').replace(/undefined/gi,'3'),'');
-        var c3_res = ves(c3.replace(/1/gi,'X').replace(/0/gi,'3').replace(/2/gi,'3').replace(/undefined/gi,'3'),'');
-        var c4_res = ves(c4.replace(/1/gi,'X').replace(/0/gi,'3').replace(/2/gi,'3').replace(/undefined/gi,'3'),'');
+		if(xo === 'X'){
+			var c1_res = ves(c1.replace(/1/gi,'X').replace(/0/gi,'3').replace(/2/gi,'3').replace(/undefined/gi,'3'),'');
+			var c2_res = ves(c2.replace(/1/gi,'X').replace(/0/gi,'3').replace(/2/gi,'3').replace(/undefined/gi,'3'),'');
+			var c3_res = ves(c3.replace(/1/gi,'X').replace(/0/gi,'3').replace(/2/gi,'3').replace(/undefined/gi,'3'),'');
+			var c4_res = ves(c4.replace(/1/gi,'X').replace(/0/gi,'3').replace(/2/gi,'3').replace(/undefined/gi,'3'),'');
+		}else{
+			var c1_res = ves(c1.replace(/2/gi,'X').replace(/0/gi,'3').replace(/1/gi,'3').replace(/undefined/gi,'3'),'');
+			var c2_res = ves(c2.replace(/2/gi,'X').replace(/0/gi,'3').replace(/1/gi,'3').replace(/undefined/gi,'3'),'');
+			var c3_res = ves(c3.replace(/2/gi,'X').replace(/0/gi,'3').replace(/1/gi,'3').replace(/undefined/gi,'3'),'');
+			var c4_res = ves(c4.replace(/2/gi,'X').replace(/0/gi,'3').replace(/1/gi,'3').replace(/undefined/gi,'3'),'');
+		}
         
             type = max(Number(c1_res), Number(c2_res), Number(c3_res), Number(c4_res));
-                //alert(Number(c1_res)+' '+Number(c2_res)+' '+Number(c3_res)+' '+Number(c4_res));
-                //alert(type);
-                move_o(type);
-                
-              
-                
+			move_o(type);
+			
         function move_o(type){
-            //alert(Number(c1_res)+' '+Number(c2_res)+' '+Number(c3_res)+' '+Number(c4_res));
-            if(c1_res !=0 || c2_res !=0  || c3_res !=0 || c4_res !=0){
                 if(type === 'c1'){
                     if(c1_res > 0){
                         if(c1_res === 2){
                             if(mas[i][Number(j)-2] === 0){
                                 mas[i][Number(j)-2] = 2;
                                 $('#'+i+'-'+(Number(j)-2)).val('O');
+								win(i,(Number(j)-2),'O');
                             } else{
                                 c1_res = 0;
                                 type = max(Number(c1_res), Number(c2_res), Number(c3_res), Number(c4_res));
@@ -252,6 +226,7 @@ $( document ).ready(function() {
                             if(mas[i][Number(j)+2] === 0){
                                 mas[i][Number(j)+2] = 2;
                                 $('#'+i+'-'+(Number(j)+2)).val('O');
+								win(i,(Number(j)+2),'O');
                             } else{
                                 c1_res = 0;
                                 type = max(Number(c1_res), Number(c2_res), Number(c3_res), Number(c4_res));
@@ -261,6 +236,7 @@ $( document ).ready(function() {
                             if(mas[i][Number(j)-1] === 0 ){
                                 mas[i][Number(j)-1] = 2;
                                 $('#'+i+'-'+(Number(j)-1)).val('O');
+								win(i,(Number(j)-1),'O');
                             } else{
                                 c1_res = 0;
                                 type = max(Number(c1_res), Number(c2_res), Number(c3_res), Number(c4_res));
@@ -270,6 +246,7 @@ $( document ).ready(function() {
                             if(mas[i][Number(j)+1] === 0){
                                 mas[i][Number(j)+1] = 2;
                                 $('#'+i+'-'+(Number(j)+1)).val('O');
+								win(i,(Number(j)+1),'O');
                             } else{
                                 c1_res = 0;
                                 type = max(Number(c1_res), Number(c2_res), Number(c3_res), Number(c4_res));
@@ -279,6 +256,7 @@ $( document ).ready(function() {
                             if(mas[i][Number(j)-1] === 0){
                                 mas[i][Number(j)-1] = 2;
                                 $('#'+i+'-'+(Number(j)-1)).val('O');
+								win(i,(Number(j)-1),'O');
                             } else{
                                 c1_res = 0;
                                 type = max(Number(c1_res), Number(c2_res), Number(c3_res), Number(c4_res));
@@ -288,6 +266,7 @@ $( document ).ready(function() {
                             if(mas[i][Number(j)+1] === 0){
                                 mas[i][Number(j)+1] = 2;
                                 $('#'+i+'-'+(Number(j)+1)).val('O');
+								win(i,(Number(j)+1),'O');
                             } else{
                                 c1_res = 0;
                                 type = max(Number(c1_res), Number(c2_res), Number(c3_res), Number(c4_res));
@@ -297,6 +276,7 @@ $( document ).ready(function() {
                             if(mas[i][Number(j)+1] === 0 && mas[i][Number(j)-3] != 2){
                                 mas[i][Number(j)+1] = 2;
                                 $('#'+i+'-'+(Number(j)+1)).val('O');
+								win(i,(Number(j)+1),'O');
                             } else{
                                 c1_res = 0;
                                 type = max(Number(c1_res), Number(c2_res), Number(c3_res), Number(c4_res));
@@ -306,6 +286,7 @@ $( document ).ready(function() {
                             if(mas[i][Number(j)-1] === 0 && mas[i][Number(j)+3] != 2){
                                 mas[i][Number(j)-1] = 2;
                                 $('#'+i+'-'+(Number(j)-1)).val('O');
+								win(i,(Number(j)-1),'O');
                             } else{
                                 c1_res = 0;
                                 type = max(Number(c1_res), Number(c2_res), Number(c3_res), Number(c4_res));
@@ -315,9 +296,11 @@ $( document ).ready(function() {
                             if(mas[i][Number(j)-2] === 0){
                                 mas[i][Number(j)-2] = 2;
                                 $('#'+i+'-'+(Number(j)-2)).val('O');
+								win(i,(Number(j)-2),'O');
                             }else if(mas[i][Number(j)+2] === 0){
                                 mas[i][Number(j)+2] = 2;
                                 $('#'+i+'-'+(Number(j)+2)).val('O');
+								win(i,(Number(j)+2),'O');
                             } else{
                                 c1_res = 0;
                                 type = max(Number(c1_res), Number(c2_res), Number(c3_res), Number(c4_res));
@@ -327,6 +310,7 @@ $( document ).ready(function() {
                             if(mas[i][Number(j)-1] === 0){
                                 mas[i][Number(j)-1] = 2;
                                 $('#'+i+'-'+(Number(j)-1)).val('O');
+								win(i,(Number(j)-1),'O');
                             } else{
                                 c1_res = 0;
                                 type = max(Number(c1_res), Number(c2_res), Number(c3_res), Number(c4_res));
@@ -336,6 +320,7 @@ $( document ).ready(function() {
                             if(mas[i][Number(j)+1] === 0){
                                 mas[i][Number(j)+1] = 2;
                                 $('#'+i+'-'+(Number(j)+1)).val('O');
+								win(i,(Number(j)+1),'O');
                             } else{
                                 c1_res = 0;
                                 type = max(Number(c1_res), Number(c2_res), Number(c3_res), Number(c4_res));
@@ -345,6 +330,7 @@ $( document ).ready(function() {
                             if(mas[i][Number(j)-2] === 0){
                                 mas[i][Number(j)-2] = 2;
                                 $('#'+i+'-'+(Number(j)-2)).val('O');
+								win(i,(Number(j)-2),'O');
                             } else{
                                 c1_res = 0;
                                 type = max(Number(c1_res), Number(c2_res), Number(c3_res), Number(c4_res));
@@ -354,6 +340,7 @@ $( document ).ready(function() {
                             if(mas[i][Number(j)+2] === 0){
                                 mas[i][Number(j)+2] = 2;
                                 $('#'+i+'-'+(Number(j)+2)).val('O');
+								win(i,(Number(j)+2),'O');
                             } else{
                                 c1_res = 0;
                                 type = max(Number(c1_res), Number(c2_res), Number(c3_res), Number(c4_res));
@@ -364,13 +351,14 @@ $( document ).ready(function() {
                         if(mas[i][Number(j)+1] === 0){
                             mas[i][Number(j)+1] = 2;
                             $('#'+i+'-'+(Number(j)+1)).val('O');
+								win(i,(Number(j)+1),'O');
                         } else if(mas[i][Number(j)-1] === 0){
                             mas[i][Number(j)-1] = 2;
                             $('#'+i+'-'+(Number(j)-1)).val('O');
+								win(i,(Number(j)-1),'O');
                         } else {
                             c1_res = 0;
-                            type = max(Number(c1_res), Number(c2_res), Number(c3_res), Number(c4_res));
-                            move_o(type);
+                            move_o('c2');
                         }
                     }
                     c1_res = 0;
@@ -380,6 +368,7 @@ $( document ).ready(function() {
                             if(mas[Number(i)-2][j] === 0){
                                 mas[Number(i)-2][j] = 2;
                                 $('#'+(Number(i)-2)+'-'+j).val('O');
+								win((Number(i)-2),j,'O');
                             } else{
                                 c2_res = 0;
                                 type = max(Number(c1_res), Number(c2_res), Number(c3_res), Number(c4_res));
@@ -389,6 +378,7 @@ $( document ).ready(function() {
                             if(mas[Number(i)+2][j] === 0){
                                 mas[Number(i)+2][j] = 2;
                                 $('#'+(Number(i)+2)+'-'+j).val('O');
+								win((Number(i)+2),j,'O');
                             } else{
                                 c2_res = 0;
                                 type = max(Number(c1_res), Number(c2_res), Number(c3_res), Number(c4_res));
@@ -398,6 +388,7 @@ $( document ).ready(function() {
                             if(mas[Number(i)-1][j] === 0){
                                 mas[Number(i)-1][j] = 2;
                                 $('#'+(Number(i)-1)+'-'+j).val('O');
+								win((Number(i)-1),j,'O');
                             } else{
                                 c2_res = 0;
                                 type = max(Number(c1_res), Number(c2_res), Number(c3_res), Number(c4_res));
@@ -407,6 +398,7 @@ $( document ).ready(function() {
                             if(mas[Number(i)+1][j] === 0){
                                 mas[Number(i)+1][j] = 2;
                                 $('#'+(Number(i)+1)+'-'+j).val('O');
+								win((Number(i)+1),j,'O');
                             } else{
                                 c2_res = 0;
                                 type = max(Number(c1_res), Number(c2_res), Number(c3_res), Number(c4_res));
@@ -416,6 +408,7 @@ $( document ).ready(function() {
                             if(mas[Number(i)-1][j] === 0){
                                 mas[Number(i)-1][j] = 2;
                                 $('#'+(Number(i)-1)+'-'+j).val('O');
+								win((Number(i)-1),j,'O');
                             } else{
                                 c2_res = 0;
                                 type = max(Number(c1_res), Number(c2_res), Number(c3_res), Number(c4_res));
@@ -425,6 +418,7 @@ $( document ).ready(function() {
                             if(mas[Number(i)+1][j] === 0){
                                 mas[Number(i)+1][j] = 2;
                                 $('#'+(Number(i)+1)+'-'+j).val('O');
+								win((Number(i)+1),j,'O');
                             } else{
                                 c2_res = 0;
                                 type = max(Number(c1_res), Number(c2_res), Number(c3_res), Number(c4_res));
@@ -434,6 +428,7 @@ $( document ).ready(function() {
                             if(mas[Number(i)+1][j] === 0 && mas[Number(i)-3][j] != 2){
                                 mas[Number(i)+1][j] = 2;
                                 $('#'+(Number(i)+1)+'-'+j).val('O');
+								win((Number(i)+1),j,'O');
                             } else{
                                 c2_res = 0;
                                 type = max(Number(c1_res), Number(c2_res), Number(c3_res), Number(c4_res));
@@ -443,6 +438,7 @@ $( document ).ready(function() {
                             if(mas[Number(i)-1][j] === 0 && mas[Number(i)-3][j] != 2){
                                 mas[Number(i)-1][j] = 2;
                                 $('#'+(Number(i)-1)+'-'+j).val('O');
+								win((Number(i)-1),j,'O');
                             } else{
                                 c2_res = 0;
                                 type = max(Number(c1_res), Number(c2_res), Number(c3_res), Number(c4_res));
@@ -452,9 +448,11 @@ $( document ).ready(function() {
                             if(mas[Number(i)-2][j] === 0){
                                 mas[Number(i)-2][j] = 2;
                                 $('#'+(Number(i)-2)+'-'+j).val('O');
+								win((Number(i)-2),j,'O');
                             }else if(mas[Number(i)+2][j] === 0){
                                 mas[Number(i)+2][j] = 2;
                                 $('#'+(Number(i)+2)+'-'+j).val('O');
+								win((Number(i)+2),j,'O');
                             } else{
                                 c2_res = 0;
                                 type = max(Number(c1_res), Number(c2_res), Number(c3_res), Number(c4_res));
@@ -464,6 +462,7 @@ $( document ).ready(function() {
                             if(mas[Number(i)-1][j] === 0){
                                 mas[Number(i)-1][j] = 2;
                                 $('#'+(Number(i)-1)+'-'+j).val('O');
+								win((Number(i)-1),j,'O');
                             } else{
                                 c2_res = 0;
                                 type = max(Number(c1_res), Number(c2_res), Number(c3_res), Number(c4_res));
@@ -473,6 +472,7 @@ $( document ).ready(function() {
                             if(mas[Number(i)+1][j] === 0){
                                 mas[Number(i)+1][j] = 2;
                                 $('#'+(Number(i)+1)+'-'+j).val('O');
+								win((Number(i)+1),j,'O');
                             } else{
                                 c2_res = 0;
                                 type = max(Number(c1_res), Number(c2_res), Number(c3_res), Number(c4_res));
@@ -482,6 +482,7 @@ $( document ).ready(function() {
                             if(mas[Number(i)-2][j] === 0){
                                 mas[Number(i)-2][j] = 2;
                                 $('#'+(Number(i)-2)+'-'+j).val('O');
+								win((Number(i)-2),j,'O');
                             } else{
                                 c2_res = 0;
                                 type = max(Number(c1_res), Number(c2_res), Number(c3_res), Number(c4_res));
@@ -491,19 +492,21 @@ $( document ).ready(function() {
                             if(mas[Number(i)+2][j] === 0){
                                 mas[Number(i)+2][j] = 2;
                                 $('#'+(Number(i)+2)+'-'+j).val('O');
+								win((Number(i)+2),j,'O');
                             } else{
                                 c2_res = 0;
-                                type = max(Number(c1_res), Number(c2_res), Number(c3_res), Number(c4_res));
-                                move_o(type);
+                                move_o('c3');
                             }
                         }
                     } else {
                         if(mas[Number(i)+1][j] === 0){
                             mas[Number(i)+1][j] = 2;
-                            $('#'+i+'-'+(Number(j)+1)).val('O');
+                            $('#'+(Number(i)+1)+'-'+j).val('O');
+								win((Number(i)+1),j,'O');
                         } else if(mas[Number(i)-1][j] === 0){
                             mas[Number(i)-1][j] = 2;
-                            $('#'+i+'-'+(Number(j)-1)).val('O');
+                            $('#'+(Number(i)-1)+'-'+j).val('O');
+								win((Number(i)-1),j,'O');
                         } else {
                             c1_res = 0;
                             type = max(Number(c1_res), Number(c2_res), Number(c3_res), Number(c4_res));
@@ -517,6 +520,7 @@ $( document ).ready(function() {
                             if(mas[Number(i)-2][Number(j)-2] === 0){
                                 mas[Number(i)-2][Number(j)-2] = 2;
                                 $('#'+(Number(i)-2)+'-'+(Number(j)-2)).val('O');
+								win((Number(i)-2),(Number(j)-2),'O');
                             } else{
                                 c3_res = 0;
                                 type = max(Number(c1_res), Number(c2_res), Number(c3_res), Number(c4_res));
@@ -526,6 +530,7 @@ $( document ).ready(function() {
                             if(mas[Number(i)+2][Number(j)+2] === 0){
                                 mas[Number(i)+2][Number(j)+2] = 2;
                                 $('#'+(Number(i)+2)+'-'+(Number(j)+2)).val('O');
+								win((Number(i)+2),(Number(j)+2),'O');
                             } else{
                                 c3_res = 0;
                                 type = max(Number(c1_res), Number(c2_res), Number(c3_res), Number(c4_res));
@@ -535,6 +540,7 @@ $( document ).ready(function() {
                             if(mas[Number(i)-1][Number(j)-1] === 0){
                                 mas[Number(i)-1][Number(j)-1] = 2;
                                 $('#'+(Number(i)-1)+'-'+(Number(j)-1)).val('O');
+								win((Number(i)-1),(Number(j)-1),'O');
                             } else{
                                 c3_res = 0;
                                 type = max(Number(c1_res), Number(c2_res), Number(c3_res), Number(c4_res));
@@ -544,6 +550,7 @@ $( document ).ready(function() {
                             if(mas[Number(i)+1][Number(j)+1] === 0){
                                 mas[Number(i)+1][Number(j)+1] = 2;
                                 $('#'+(Number(i)+1)+'-'+(Number(j)+1)).val('O');
+								win((Number(i)+1),(Number(j)+1),'O');
                             } else{
                                 c3_res = 0;
                                 type = max(Number(c1_res), Number(c2_res), Number(c3_res), Number(c4_res));
@@ -553,6 +560,7 @@ $( document ).ready(function() {
                             if(mas[Number(i)-1][Number(j)-1] === 0){
                                 mas[Number(i)-1][Number(j)-1] = 2;
                                 $('#'+(Number(i)-1)+'-'+(Number(j)-1)).val('O');
+								win((Number(i)-1),(Number(j)-1),'O');
                             } else{
                                 c3_res = 0;
                                 type = max(Number(c1_res), Number(c2_res), Number(c3_res), Number(c4_res));
@@ -562,6 +570,7 @@ $( document ).ready(function() {
                             if(mas[Number(i)+1][Number(j)+1] === 0){
                                 mas[Number(i)+1][Number(j)+1] = 2;
                                 $('#'+(Number(i)+1)+'-'+(Number(j)+1)).val('O');
+								win((Number(i)+1),(Number(j)+1),'O');
                             } else{
                                 c3_res = 0;
                                 type = max(Number(c1_res), Number(c2_res), Number(c3_res), Number(c4_res));
@@ -571,6 +580,7 @@ $( document ).ready(function() {
                             if(mas[Number(i)+1][Number(j)+1] === 0 && mas[Number(i)-3][Number(j)-3] != 2){
                                 mas[Number(i)+1][Number(j)+1] = 2;
                                 $('#'+(Number(i)+1)+'-'+(Number(j)+1)).val('O');
+								win((Number(i)+1),(Number(j)+1),'O');
                             } else{
                                 c3_res = 0;
                                 type = max(Number(c1_res), Number(c2_res), Number(c3_res), Number(c4_res));
@@ -580,6 +590,7 @@ $( document ).ready(function() {
                             if(mas[Number(i)-1][Number(j)-1] === 0 && mas[Number(i)+3][Number(j)+3] != 2){
                                 mas[Number(i)-1][Number(j)-1] = 2;
                                 $('#'+(Number(i)-1)+'-'+(Number(j)-1)).val('O');
+								win((Number(i)-1),(Number(j)-1),'O');
                             } else{
                                 c3_res = 0;
                                 type = max(Number(c1_res), Number(c2_res), Number(c3_res), Number(c4_res));
@@ -589,9 +600,11 @@ $( document ).ready(function() {
                             if(mas[Number(i)-2][Number(j)-2] === 0){
                                 mas[Number(i)-2][Number(j)-2] = 2;
                                 $('#'+(Number(i)-2)+'-'+(Number(j)-2)).val('O');
+								win((Number(i)-2),(Number(j)-2),'O');
                             }else if(mas[Number(i)+2][Number(j)+2] === 0){
                                 mas[Number(i)+2][Number(j)+2] = 2;
                                 $('#'+(Number(i)+2)+'-'+(Number(j)+2)).val('O');
+								win((Number(i)+2),(Number(j)+2),'O');
                             } else{
                                 c3_res = 0;
                                 type = max(Number(c1_res), Number(c2_res), Number(c3_res), Number(c4_res));
@@ -601,6 +614,7 @@ $( document ).ready(function() {
                             if(mas[Number(i)-1][Number(j)-1] === 0){
                                 mas[Number(i)-1][Number(j)-1] = 2;
                                 $('#'+(Number(i)-1)+'-'+(Number(j)-1)).val('O');
+								win((Number(i)-1),(Number(j)-1),'O');
                             } else{
                                 c3_res = 0;
                                 type = max(Number(c1_res), Number(c2_res), Number(c3_res), Number(c4_res));
@@ -610,6 +624,7 @@ $( document ).ready(function() {
                             if(mas[Number(i)+1][Number(j)+1] === 0){
                                 mas[Number(i)+1][Number(j)+1] = 2;
                                 $('#'+(Number(i)+1)+'-'+(Number(j)+1)).val('O');
+								win((Number(i)+1),(Number(j)+1),'O');
                             } else{
                                 c3_res = 0;
                                 type = max(Number(c1_res), Number(c2_res), Number(c3_res), Number(c4_res));
@@ -619,6 +634,7 @@ $( document ).ready(function() {
                             if(mas[Number(i)-2][Number(j)-2] === 0){
                                 mas[Number(i)-2][Number(j)-2] = 2;
                                 $('#'+(Number(i)-2)+'-'+(Number(j)-2)).val('O');
+								win((Number(i)-2),(Number(j)-2),'O');
                             } else{
                                 c3_res = 0;
                                 type = max(Number(c1_res), Number(c2_res), Number(c3_res), Number(c4_res));
@@ -628,6 +644,7 @@ $( document ).ready(function() {
                             if(mas[Number(i)+2][Number(j)+2] === 0){
                                 mas[Number(i)+2][Number(j)+2] = 2;
                                 $('#'+(Number(i)+2)+'-'+(Number(j)+2)).val('O');
+								win((Number(i)+2),(Number(j)+2),'O');
                             } else{
                                 c3_res = 0;
                                 type = max(Number(c1_res), Number(c2_res), Number(c3_res), Number(c4_res));
@@ -638,23 +655,24 @@ $( document ).ready(function() {
                         if(mas[Number(i)+1][Number(j)+1] === 0){
                             mas[Number(i)+1][Number(j)+1] = 2;
                             $('#'+(Number(i)+1)+'-'+(Number(j)+1)).val('O');
+								win((Number(i)+1),(Number(j)+1),'O');
                         } else if(mas[Number(i)-1][Number(j)-1] === 0){
                             mas[Number(i)-1][Number(j)-1] = 2;
                             $('#'+(Number(i)-1)+'-'+(Number(j)-1)).val('O');
+								win((Number(i)-1),(Number(j)-1),'O');
                         } else {
                             c1_res = 0;
-                            type = max(Number(c1_res), Number(c2_res), Number(c3_res), Number(c4_res));
-                            move_o(type);
+                            move_o('c4');
                         }
                     }
                     c3_res = 0;
                 } else if(type === 'c4'){
-                    //alert(c4_res);
                     if(c4_res > 0){
                         if(c4_res === 2){
                             if(mas[Number(i)+2][Number(j)-2] === 0){
                                 mas[Number(i)+2][Number(j)-2] = 2;
                                 $('#'+(Number(i)+2)+'-'+(Number(j)-2)).val('O');
+								win((Number(i)+2),(Number(j)-2),'O');
                             } else{
                                 c4_res = 0;
                                 type = max(Number(c1_res), Number(c2_res), Number(c3_res), Number(c4_res));
@@ -664,6 +682,7 @@ $( document ).ready(function() {
                             if(mas[Number(i)-2][Number(j)+2] === 0){
                                 mas[Number(i)-2][Number(j)+2] = 2;
                                 $('#'+(Number(i)-2)+'-'+(Number(j)+2)).val('O');
+								win(i,(Number(j)-2),'O');
                             } else{
                                 c4_res = 0;
                                 type = max(Number(c1_res), Number(c2_res), Number(c3_res), Number(c4_res));
@@ -673,6 +692,7 @@ $( document ).ready(function() {
                             if(mas[Number(i)+1][Number(j)-1] === 0){
                                 mas[Number(i)+1][Number(j)-1] = 2;
                                 $('#'+(Number(i)+1)+'-'+(Number(j)-1)).val('O');
+								win((Number(i)+1),(Number(j)-1),'O');
                             } else{
                                 c4_res = 0;
                                 type = max(Number(c1_res), Number(c2_res), Number(c3_res), Number(c4_res));
@@ -682,6 +702,7 @@ $( document ).ready(function() {
                             if(mas[Number(i)-1][Number(j)+1] === 0){
                                 mas[Number(i)-1][Number(j)+1] = 2;
                                 $('#'+(Number(i)-1)+'-'+(Number(j)+1)).val('O');
+								win((Number(i)-1),(Number(j)+1),'O');
                             } else{
                                 c4_res = 0;
                                 type = max(Number(c1_res), Number(c2_res), Number(c3_res), Number(c4_res));
@@ -691,6 +712,7 @@ $( document ).ready(function() {
                             if(mas[Number(i)+1][Number(j)-1] === 0){
                                 mas[Number(i)+1][Number(j)-1] = 2;
                                 $('#'+(Number(i)+1)+'-'+(Number(j)-1)).val('O');
+								win((Number(i)+1),(Number(j)-1),'O');
                             } else{
                                 c4_res = 0;
                                 type = max(Number(c1_res), Number(c2_res), Number(c3_res), Number(c4_res));
@@ -700,6 +722,7 @@ $( document ).ready(function() {
                             if(mas[Number(i)-1][Number(j)+1] === 0){
                                 mas[Number(i)-1][Number(j)+1] = 2;
                                 $('#'+(Number(i)-1)+'-'+(Number(j)+1)).val('O');
+								win((Number(i)-1),(Number(j)+1),'O');
                             } else{
                                 c4_res = 0;
                                 type = max(Number(c1_res), Number(c2_res), Number(c3_res), Number(c4_res));
@@ -709,6 +732,7 @@ $( document ).ready(function() {
                             if(mas[Number(i)-1][Number(j)+1] === 0 && mas[Number(i)+3][Number(j)-3] != 2){
                                 mas[Number(i)-1][Number(j)+1] = 2;
                                 $('#'+(Number(i)-1)+'-'+(Number(j)+1)).val('O');
+								win((Number(i)-1),(Number(j)+1),'O');
                             } else{
                                 c4_res = 0;
                                 type = max(Number(c1_res), Number(c2_res), Number(c3_res), Number(c4_res));
@@ -718,6 +742,7 @@ $( document ).ready(function() {
                             if(mas[Number(i)+1][Number(j)-1] === 0 && mas[Number(i)-3][Number(j)+3] != 2){
                                 mas[Number(i)+1][Number(j)-1] = 2;
                                 $('#'+(Number(i)+1)+'-'+(Number(j)-1)).val('O');
+								win((Number(i)+1),(Number(j)-1),'O');
                             } else{
                                 c4_res = 0;
                                 type = max(Number(c1_res), Number(c2_res), Number(c3_res), Number(c4_res));
@@ -727,9 +752,11 @@ $( document ).ready(function() {
                             if(mas[Number(i)+2][Number(j)-2] === 0){
                                 mas[Number(i)+2][Number(j)-2] = 2;
                                 $('#'+(Number(i)+2)+'-'+(Number(j)-2)).val('O');
+								win((Number(i)+2),(Number(j)-2),'O');
                             }else if(mas[Number(i)-2][Number(j)+2] === 0){
                                 mas[Number(i)-2][Number(j)+2] = 2;
                                 $('#'+(Number(i)-2)+'-'+(Number(j)+2)).val('O');
+								win((Number(i)-2),(Number(j)+2),'O');
                             } else{
                                 c4_res = 0;
                                 type = max(Number(c1_res), Number(c2_res), Number(c3_res), Number(c4_res));
@@ -739,6 +766,7 @@ $( document ).ready(function() {
                             if(mas[Number(i)+1][Number(j)-1] === 0){
                                 mas[Number(i)+1][Number(j)-1] = 2;
                                 $('#'+(Number(i)+1)+'-'+(Number(j)-1)).val('O');
+								win((Number(i)+1),(Number(j)-1),'O');
                             } else{
                                 c4_res = 0;
                                 type = max(Number(c1_res), Number(c2_res), Number(c3_res), Number(c4_res));
@@ -748,6 +776,7 @@ $( document ).ready(function() {
                             if(mas[Number(i)-1][Number(j)+1] === 0){
                                 mas[Number(i)-1][Number(j)+1] = 2;
                                 $('#'+(Number(i)-1)+'-'+(Number(j)+1)).val('O');
+								win((Number(i)-1),(Number(j)+1),'O');
                             } else{
                                 c4_res = 0;
                                 type = max(Number(c1_res), Number(c2_res), Number(c3_res), Number(c4_res));
@@ -757,6 +786,7 @@ $( document ).ready(function() {
                             if(mas[Number(i)+2][Number(j)-2] === 0){
                                 mas[Number(i)+2][Number(j)-2] = 2;
                                 $('#'+(Number(i)+2)+'-'+(Number(j)-2)).val('O');
+								win(i,(Number(j)-2),'O');
                             } else{
                                 c4_res = 0;
                                 type = max(Number(c1_res), Number(c2_res), Number(c3_res), Number(c4_res));
@@ -766,6 +796,7 @@ $( document ).ready(function() {
                             if(mas[Number(i)-2][Number(j)+2] === 0){
                                 mas[Number(i)-2][Number(j)+2] = 2;
                                 $('#'+(Number(i)-2)+'-'+(Number(j)+2)).val('O');
+								win((Number(i)-2),(Number(j)+2),'O');
                             } else{
                                 c4_res = 0;
                                 type = max(Number(c1_res), Number(c2_res), Number(c3_res), Number(c4_res));
@@ -776,9 +807,11 @@ $( document ).ready(function() {
                         if(mas[Number(i)-1][Number(j)+1] === 0){
                             mas[Number(i)-1][Number(j)+1] = 2;
                             $('#'+(Number(i)-1)+'-'+(Number(j)+1)).val('O');
-                        } else if(mas[Number(i)-1][Number(j)+1] === 0){
-                            mas[Number(i)-1][Number(j)+1] = 2;
-                            $('#'+(Number(i)-1)+'-'+(Number(j)+1)).val('O');
+								win((Number(i)-1),(Number(j)+1),'O');
+                        } else if(mas[Number(i)+1][Number(j)-1] === 0){
+                            mas[Number(i)+1][Number(j)-1] = 2;
+                            $('#'+(Number(i)+1)+'-'+(Number(j)-1)).val('O');
+								win((Number(i)+1),(Number(j)-1),'O');
                         } else {
                             c1_res = 0;
                             type = max(Number(c1_res), Number(c2_res), Number(c3_res), Number(c4_res));
@@ -787,9 +820,6 @@ $( document ).ready(function() {
                     }
                     c4_res = 0;
                 }
-            }else{
-                alert(111);
-            }
         };
         
         function ves(pod){
@@ -829,14 +859,13 @@ $( document ).ready(function() {
         }
         
         function max(c1, c2, c3, c4){
-            //alert(1);
             if(c1 >= c2 && c1 >= c3 && c1 >= c4){
                 return 'c1';
             } else if(c2 >= c1 && c2 >= c3 && c1 >= c4){
                 return 'c2';
             } else if(c3 >= c2 && c3 >= c1 && c3 >= c4){
                 return 'c3';
-            } else{
+            }  else {
                 return 'c4';
             }
         }
